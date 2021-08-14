@@ -1,11 +1,9 @@
-﻿using System;
-
-namespace user_registration_backend.Models
+﻿namespace UserRegistrationBackend.Models
 {
     public class Contact
     {
-        public Guid Id { get; set; }
-        public int Phone { get; set; }
+        public long Id { get; set; }
+        public string Phone { get; set; }
         public string Email { get; set; }
 
         public virtual AppUser User { get; set; }

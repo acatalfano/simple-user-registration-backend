@@ -9,10 +9,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using user_registration_backend.Context;
-using user_registration_backend.Models;
+using UserRegistrationBackend.Context;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Controllers
+namespace UserRegistrationBackend.Controllers
 {
     public class NamesController : ApiController
     {
@@ -31,7 +31,7 @@ namespace user_registration_backend.Controllers
 
         // GET: api/Names/5
         [ResponseType(typeof(Name))]
-        public async Task<IHttpActionResult> GetName(Guid id)
+        public async Task<IHttpActionResult> GetName(long id)
         {
             Name name = await _dbContext.Names.FindAsync(id);
             if (name == null)
@@ -44,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Names/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutName(Guid id, Name name)
+        public async Task<IHttpActionResult> PutName(long id, Name name)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Names/5
         [ResponseType(typeof(Name))]
-        public async Task<IHttpActionResult> DeleteName(Guid id)
+        public async Task<IHttpActionResult> DeleteName(long id)
         {
             Name name = await _dbContext.Names.FindAsync(id);
             if (name == null)
@@ -132,7 +132,7 @@ namespace user_registration_backend.Controllers
             base.Dispose(disposing);
         }
 
-        private bool NameExists(Guid id)
+        private bool NameExists(long id)
         {
             return _dbContext.Names.Count(e => e.Id == id) > 0;
         }

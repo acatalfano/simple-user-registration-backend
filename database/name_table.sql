@@ -1,6 +1,0 @@
-CREATE TABLE [dbo].[Name] (
-		id UNIQUEIDENTIFIER PRIMARY KEY
-	,	firstName VARCHAR(50)
-	,	lastName VARCHAR(50)
-);
-GO

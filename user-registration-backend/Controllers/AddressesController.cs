@@ -9,10 +9,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using user_registration_backend.Context;
-using user_registration_backend.Models;
+using UserRegistrationBackend.Context;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Controllers
+namespace UserRegistrationBackend.Controllers
 {
     public class AddressesController : ApiController
     {
@@ -31,7 +31,7 @@ namespace user_registration_backend.Controllers
 
         // GET: api/Addresses/5
         [ResponseType(typeof(Address))]
-        public async Task<IHttpActionResult> GetAddress(Guid id)
+        public async Task<IHttpActionResult> GetAddress(long id)
         {
             Address address = await _dbContext.Addresses.FindAsync(id);
             if (address == null)
@@ -44,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Addresses/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutAddress(Guid id, Address address)
+        public async Task<IHttpActionResult> PutAddress(long id, Address address)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Addresses/5
         [ResponseType(typeof(Address))]
-        public async Task<IHttpActionResult> DeleteAddress(Guid id)
+        public async Task<IHttpActionResult> DeleteAddress(long id)
         {
             Address address = await _dbContext.Addresses.FindAsync(id);
             if (address == null)
@@ -132,7 +132,7 @@ namespace user_registration_backend.Controllers
             base.Dispose(disposing);
         }
 
-        private bool AddressExists(Guid id)
+        private bool AddressExists(long id)
         {
             return _dbContext.Addresses.Count(e => e.Id == id) > 0;
         }

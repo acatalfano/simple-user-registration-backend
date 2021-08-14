@@ -9,10 +9,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using user_registration_backend.Context;
-using user_registration_backend.Models;
+using UserRegistrationBackend.Context;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Controllers
+namespace UserRegistrationBackend.Controllers
 {
     public class AppUsersController : ApiController
     {
@@ -31,7 +31,7 @@ namespace user_registration_backend.Controllers
 
         // GET: api/AppUsers/5
         [ResponseType(typeof(AppUser))]
-        public async Task<IHttpActionResult> GetAppUser(Guid id)
+        public async Task<IHttpActionResult> GetAppUser(long id)
         {
             AppUser appUser = await _dbContext.Users.FindAsync(id);
             if (appUser == null)
@@ -44,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/AppUsers/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutAppUser(Guid id, AppUser appUser)
+        public async Task<IHttpActionResult> PutAppUser(long id, AppUser appUser)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/AppUsers/5
         [ResponseType(typeof(AppUser))]
-        public async Task<IHttpActionResult> DeleteAppUser(Guid id)
+        public async Task<IHttpActionResult> DeleteAppUser(long id)
         {
             AppUser appUser = await _dbContext.Users.FindAsync(id);
             if (appUser == null)
@@ -132,7 +132,7 @@ namespace user_registration_backend.Controllers
             base.Dispose(disposing);
         }
 
-        private bool AppUserExists(Guid id)
+        private bool AppUserExists(long id)
         {
             return _dbContext.Users.Count(e => e.Id == id) > 0;
         }

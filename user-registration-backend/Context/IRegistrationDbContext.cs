@@ -1,7 +1,7 @@
 ﻿using System.Data.Entity;
-using user_registration_backend.Models;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Context
+namespace UserRegistrationBackend.Context
 {
 
     public interface IRegistrationDbContext : IDbContext

@@ -3,7 +3,7 @@ using System.Data.Entity.Infrastructure;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace user_registration_backend.Context
+namespace UserRegistrationBackend.Context
 {
     public interface IDbContext : IDisposable
     {

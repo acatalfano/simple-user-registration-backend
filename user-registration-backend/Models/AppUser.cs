@@ -1,13 +1,11 @@
-﻿using System;
-
-namespace user_registration_backend.Models
+﻿namespace UserRegistrationBackend.Models
 {
     public class AppUser
     {
-        public Guid Id { get; set; }
-        public Guid NameId { get; set; }
-        public Guid ContactId { get; set; }
-        public Guid AddressId { get; set; }
+        public long Id { get; set; }
+        public long NameId { get; set; }
+        public long ContactId { get; set; }
+        public long AddressId { get; set; }
         public string Username { get; set; }
         public string Salt { get; set; }
         public string PasswordHash { get; set; }

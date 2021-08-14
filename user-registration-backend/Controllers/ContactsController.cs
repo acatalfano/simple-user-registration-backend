@@ -9,10 +9,10 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
-using user_registration_backend.Context;
-using user_registration_backend.Models;
+using UserRegistrationBackend.Context;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Controllers
+namespace UserRegistrationBackend.Controllers
 {
     public class ContactsController : ApiController
     {
@@ -31,7 +31,7 @@ namespace user_registration_backend.Controllers
 
         // GET: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> GetContact(Guid id)
+        public async Task<IHttpActionResult> GetContact(long id)
         {
             Contact contact = await _dbContext.Contacts.FindAsync(id);
             if (contact == null)
@@ -44,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public async Task<IHttpActionResult> PutContact(Guid id, Contact contact)
+        public async Task<IHttpActionResult> PutContact(long id, Contact contact)
         {
             if (!ModelState.IsValid)
             {
@@ -109,7 +109,7 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public async Task<IHttpActionResult> DeleteContact(Guid id)
+        public async Task<IHttpActionResult> DeleteContact(long id)
         {
             Contact contact = await _dbContext.Contacts.FindAsync(id);
             if (contact == null)
@@ -132,7 +132,7 @@ namespace user_registration_backend.Controllers
             base.Dispose(disposing);
         }
 
-        private bool ContactExists(Guid id)
+        private bool ContactExists(long id)
         {
             return _dbContext.Contacts.Count(e => e.Id == id) > 0;
         }

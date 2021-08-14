@@ -1,7 +1,8 @@
 ﻿using System.Data.Entity;
-using user_registration_backend.Models;
+using System.Data.Entity.ModelConfiguration.Conventions;
+using UserRegistrationBackend.Models;
 
-namespace user_registration_backend.Context
+namespace UserRegistrationBackend.Context
 {
 
     public class RegistrationDbContext : DbContext, IRegistrationDbContext
@@ -11,8 +12,14 @@ namespace user_registration_backend.Context
         public virtual DbSet<Name> Names { get; set; }
         public virtual DbSet<AppUser> Users { get; set; }
 
+        public RegistrationDbContext() : base("RegistrationContext")
+        {
+        }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
+            modelBuilder.Conventions.Remove<PluralizingTableNameConvention>();
+
             var addressEntity = modelBuilder.Entity<Address>()
                 .HasKey(address => address.Id);
             addressEntity.Property(address => address.StreetAddress);

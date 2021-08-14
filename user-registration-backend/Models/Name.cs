@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace user_registration_backend.Models
+﻿namespace UserRegistrationBackend.Models
 {
     public class Name
     {
-        public Guid Id { get; set; }
+        public long Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
 
