@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using user_registration_backend.Context;
@@ -15,19 +16,24 @@ namespace user_registration_backend.Controllers
 {
     public class ContactsController : ApiController
     {
-        //private RegistrationDbContext db = new RegistrationDbContext();
+        private readonly IRegistrationDbContext _dbContext;
+
+        public ContactsController(IRegistrationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         // GET: api/Contacts
         public IQueryable<Contact> GetContacts()
         {
-            return db.Contacts;
+            return _dbContext.Contacts;
         }
 
         // GET: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult GetContact(Guid id)
+        public async Task<IHttpActionResult> GetContact(Guid id)
         {
-            Contact contact = db.Contacts.Find(id);
+            Contact contact = await _dbContext.Contacts.FindAsync(id);
             if (contact == null)
             {
                 return NotFound();
@@ -38,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Contacts/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutContact(Guid id, Contact contact)
+        public async Task<IHttpActionResult> PutContact(Guid id, Contact contact)
         {
             if (!ModelState.IsValid)
             {
@@ -50,11 +56,11 @@ namespace user_registration_backend.Controllers
                 return BadRequest();
             }
 
-            db.Entry(contact).State = EntityState.Modified;
+            _dbContext.Entry(contact).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,18 +79,18 @@ namespace user_registration_backend.Controllers
 
         // POST: api/Contacts
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult PostContact(Contact contact)
+        public async Task<IHttpActionResult> PostContact(Contact contact)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Contacts.Add(contact);
+            _dbContext.Contacts.Add(contact);
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -103,16 +109,16 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Contacts/5
         [ResponseType(typeof(Contact))]
-        public IHttpActionResult DeleteContact(Guid id)
+        public async Task<IHttpActionResult> DeleteContact(Guid id)
         {
-            Contact contact = db.Contacts.Find(id);
+            Contact contact = await _dbContext.Contacts.FindAsync(id);
             if (contact == null)
             {
                 return NotFound();
             }
 
-            db.Contacts.Remove(contact);
-            db.SaveChanges();
+            _dbContext.Contacts.Remove(contact);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(contact);
         }
@@ -121,14 +127,14 @@ namespace user_registration_backend.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _dbContext.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool ContactExists(Guid id)
         {
-            return db.Contacts.Count(e => e.Id == id) > 0;
+            return _dbContext.Contacts.Count(e => e.Id == id) > 0;
         }
     }
 }

@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using user_registration_backend.Context;
@@ -15,19 +16,24 @@ namespace user_registration_backend.Controllers
 {
     public class NamesController : ApiController
     {
-        //private RegistrationDbContext db = new RegistrationDbContext();
+        private readonly IRegistrationDbContext _dbContext;
+
+        public NamesController(IRegistrationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         // GET: api/Names
         public IQueryable<Name> GetNames()
         {
-            return db.Names;
+            return _dbContext.Names;
         }
 
         // GET: api/Names/5
         [ResponseType(typeof(Name))]
-        public IHttpActionResult GetName(Guid id)
+        public async Task<IHttpActionResult> GetName(Guid id)
         {
-            Name name = db.Names.Find(id);
+            Name name = await _dbContext.Names.FindAsync(id);
             if (name == null)
             {
                 return NotFound();
@@ -38,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Names/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutName(Guid id, Name name)
+        public async Task<IHttpActionResult> PutName(Guid id, Name name)
         {
             if (!ModelState.IsValid)
             {
@@ -50,11 +56,11 @@ namespace user_registration_backend.Controllers
                 return BadRequest();
             }
 
-            db.Entry(name).State = EntityState.Modified;
+            _dbContext.Entry(name).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,18 +79,18 @@ namespace user_registration_backend.Controllers
 
         // POST: api/Names
         [ResponseType(typeof(Name))]
-        public IHttpActionResult PostName(Name name)
+        public async Task<IHttpActionResult> PostName(Name name)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Names.Add(name);
+            _dbContext.Names.Add(name);
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -103,16 +109,16 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Names/5
         [ResponseType(typeof(Name))]
-        public IHttpActionResult DeleteName(Guid id)
+        public async Task<IHttpActionResult> DeleteName(Guid id)
         {
-            Name name = db.Names.Find(id);
+            Name name = await _dbContext.Names.FindAsync(id);
             if (name == null)
             {
                 return NotFound();
             }
 
-            db.Names.Remove(name);
-            db.SaveChanges();
+            _dbContext.Names.Remove(name);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(name);
         }
@@ -121,14 +127,14 @@ namespace user_registration_backend.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _dbContext.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool NameExists(Guid id)
         {
-            return db.Names.Count(e => e.Id == id) > 0;
+            return _dbContext.Names.Count(e => e.Id == id) > 0;
         }
     }
 }

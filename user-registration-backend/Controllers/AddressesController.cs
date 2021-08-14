@@ -6,6 +6,7 @@ using System.Data.Entity.Infrastructure;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using System.Web.Http.Description;
 using user_registration_backend.Context;
@@ -15,19 +16,24 @@ namespace user_registration_backend.Controllers
 {
     public class AddressesController : ApiController
     {
-        //private RegistrationDbContext db = new RegistrationDbContext();
+        private readonly IRegistrationDbContext _dbContext;
+
+        public AddressesController(IRegistrationDbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
 
         // GET: api/Addresses
         public IQueryable<Address> GetAddresses()
         {
-            return db.Addresses;
+            return _dbContext.Addresses;
         }
 
         // GET: api/Addresses/5
         [ResponseType(typeof(Address))]
-        public IHttpActionResult GetAddress(Guid id)
+        public async Task<IHttpActionResult> GetAddress(Guid id)
         {
-            Address address = db.Addresses.Find(id);
+            Address address = await _dbContext.Addresses.FindAsync(id);
             if (address == null)
             {
                 return NotFound();
@@ -38,7 +44,7 @@ namespace user_registration_backend.Controllers
 
         // PUT: api/Addresses/5
         [ResponseType(typeof(void))]
-        public IHttpActionResult PutAddress(Guid id, Address address)
+        public async Task<IHttpActionResult> PutAddress(Guid id, Address address)
         {
             if (!ModelState.IsValid)
             {
@@ -50,11 +56,11 @@ namespace user_registration_backend.Controllers
                 return BadRequest();
             }
 
-            db.Entry(address).State = EntityState.Modified;
+            _dbContext.Entry(address).State = EntityState.Modified;
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
@@ -73,18 +79,18 @@ namespace user_registration_backend.Controllers
 
         // POST: api/Addresses
         [ResponseType(typeof(Address))]
-        public IHttpActionResult PostAddress(Address address)
+        public async Task<IHttpActionResult> PostAddress(Address address)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
 
-            db.Addresses.Add(address);
+            _dbContext.Addresses.Add(address);
 
             try
             {
-                db.SaveChanges();
+                await _dbContext.SaveChangesAsync();
             }
             catch (DbUpdateException)
             {
@@ -103,16 +109,16 @@ namespace user_registration_backend.Controllers
 
         // DELETE: api/Addresses/5
         [ResponseType(typeof(Address))]
-        public IHttpActionResult DeleteAddress(Guid id)
+        public async Task<IHttpActionResult> DeleteAddress(Guid id)
         {
-            Address address = db.Addresses.Find(id);
+            Address address = await _dbContext.Addresses.FindAsync(id);
             if (address == null)
             {
                 return NotFound();
             }
 
-            db.Addresses.Remove(address);
-            db.SaveChanges();
+            _dbContext.Addresses.Remove(address);
+            await _dbContext.SaveChangesAsync();
 
             return Ok(address);
         }
@@ -121,14 +127,14 @@ namespace user_registration_backend.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _dbContext.Dispose();
             }
             base.Dispose(disposing);
         }
 
         private bool AddressExists(Guid id)
         {
-            return db.Addresses.Count(e => e.Id == id) > 0;
+            return _dbContext.Addresses.Count(e => e.Id == id) > 0;
         }
     }
 }

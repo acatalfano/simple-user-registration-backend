@@ -1,16 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
+﻿using System.Data.Entity;
 using user_registration_backend.Models;
 
 namespace user_registration_backend.Context
 {
-    public interface IRegistrationDbContext
-    {
-        // TODO: add necessary DbContext methods as needed
-    }
 
     public class RegistrationDbContext : DbContext, IRegistrationDbContext
     {
