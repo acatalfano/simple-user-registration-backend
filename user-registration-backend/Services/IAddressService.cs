@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace UserRegistrationBackend.Services
 {
-    interface IAddressService
+    public interface IAddressService
     {
     }
 }

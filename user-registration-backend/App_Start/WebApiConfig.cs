@@ -1,39 +1,51 @@
-﻿using System.Web.Http;
-//using Unity;
-//using Unity.Lifetime;
-//using UserRegistrationBackend.App_Start;
-//using UserRegistrationBackend.Context;
-//using UserRegistrationBackend.Services;
-//using UserRegistrationBackend.Services.Implementations;
+﻿using Autofac;
+using Autofac.Integration.WebApi;
+using AutoMapper;
+using System.Reflection;
+using System.Web.Http;
+using UserRegistrationBackend.Config;
+using UserRegistrationBackend.Context;
+using UserRegistrationBackend.Services;
+using UserRegistrationBackend.Services.Implementations;
 
 namespace UserRegistrationBackend
 {
     public static class WebApiConfig
     {
-        public static readonly int API_VERSION = 1;
-
         public static void Register(HttpConfiguration config)
         {
             // Web API configuration and services
-            //var container = new UnityContainer().AddExtension(new Diagnostic());
-            //container.RegisterType<IRegistrationDbContext, RegistrationDbContext>(new HierarchicalLifetimeManager());
+            var builder = new ContainerBuilder();
 
-            //container.RegisterType<IAddressService, AddressService>(new HierarchicalLifetimeManager());
-            //container.RegisterType<IContactService, ContactService>(new HierarchicalLifetimeManager());
-            //container.RegisterType<INameService, NameService>(new HierarchicalLifetimeManager());
-            //container.RegisterType<IUserService, UserService>(new HierarchicalLifetimeManager());
+            builder.RegisterApiControllers(Assembly.GetExecutingAssembly());
 
-            //config.DependencyResolver = new UnityDependencyResolver(container);
+            builder.RegisterType<RegistrationDbContext>().As<IRegistrationDbContext>();
 
-            //TODO: IoC resolver...
+            builder.RegisterType<AddressService>().As<IAddressService>();
+            builder.RegisterType<ContactService>().As<IContactService>();
+            builder.RegisterType<NameService>().As<INameService>();
+            builder.RegisterType<UserService>().As<IUserService>();
+
+            // Automapper setup
+            var mapConfig = new MapperConfiguration(cfg => {
+                cfg.AddProfile<AutomapperProfile>();
+            });
+            var mapper = mapConfig.CreateMapper();
+            builder.RegisterInstance(mapper).As<IMapper>();
+
+            config.DependencyResolver = new AutofacWebApiDependencyResolver(builder.Build());
 
             // Web API routes
             config.MapHttpAttributeRoutes();
 
             config.Routes.MapHttpRoute(
                 name: "RegistrationApi",
-                routeTemplate: "api/" + API_VERSION + "/users/{controller}/{id}",
-                defaults: new { controller = RouteParameter.Optional, id = RouteParameter.Optional }
+                routeTemplate: "api/v1/user/{userId}/{controller}/{id}",
+                defaults: new {
+                    userId = RouteParameter.Optional,
+                    controller = RouteParameter.Optional,
+                    id = RouteParameter.Optional
+                }
             );
         }
     }
